@@ -117,6 +117,7 @@ struct RobustSolverParams {
   Solver solver;
   OutlierRemovalMethod outlierRemovalMethod;
   std::vector<char> specialSymbols;
+  std::vector<char> ignoredSymbols;
   Verbosity verbosity;
   bool log_output;
   std::string log_folder;

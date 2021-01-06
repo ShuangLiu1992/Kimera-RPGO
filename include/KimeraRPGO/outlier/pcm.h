@@ -54,12 +54,14 @@ class Pcm : public OutlierRemoval {
   Pcm(double threshold1,
       double threshold2,
       bool incremental = false,
-      const std::vector<char>& special_symbols = std::vector<char>())
+      const std::vector<char>& special_symbols = std::vector<char>(),
+      const std::vector<char>& ignored_symbols = std::vector<char>())
       : OutlierRemoval(),
         threshold1_(threshold1),
         threshold2_(threshold2),
         incremental_(incremental),
         special_symbols_(special_symbols),
+        ignored_symbols_(ignored_symbols),
         total_lc_(0),
         total_good_lc_(0) {
     // check if templated value valid
@@ -92,6 +94,9 @@ class Pcm : public OutlierRemoval {
 
   // these are the symbols corresponding to landmarks
   std::vector<char> special_symbols_;
+
+  // these are the symbols marking those to be ignored for rejection
+  std::vector<char> ignored_symbols_;
 
   // storing landmark measurements and its adjacency matrix
   std::unordered_map<gtsam::Key, Measurements> landmarks_;
@@ -155,6 +160,9 @@ class Pcm : public OutlierRemoval {
             // re-observation: counts as loop closure
             type = FactorType::LOOP_CLOSURE;
           }
+        } else if (isIgnoredSymbol(from_symb.chr()) ||
+                   isIgnoredSymbol(to_symb.chr())) {
+          type = FactorType::UNCLASSIFIED;
         } else if (from_key + 1 == to_key && new_values.exists(to_key)) {
           // Note that here we assume we receive odometry incrementally
           type = FactorType::ODOMETRY;  // just regular odometry
@@ -418,6 +426,14 @@ class Pcm : public OutlierRemoval {
   bool isSpecialSymbol(const char& symb) const {
     for (size_t i = 0; i < special_symbols_.size(); i++) {
       if (special_symbols_[i] == symb) return true;
+    }
+    return false;
+  }
+
+  // check if a character is a marked symbol to be ignored for rejection
+  bool isIgnoredSymbol(const char& symb) const {
+    for (size_t i = 0; i < ignored_symbols_.size(); i++) {
+      if (ignored_symbols_[i] == symb) return true;
     }
     return false;
   }
