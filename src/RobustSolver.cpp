@@ -222,7 +222,7 @@ void RobustSolver::update(const gtsam::NonlinearFactorGraph& factors,
     if (params_.use_gnc_) {
       std::string gnc_log_file = log_folder_ + "/gnc_log.csv";
       std::ofstream gnc_log;
-      gnc_log.open(gnc_log_file);
+      gnc_log.open(gnc_log_file, std::ofstream::out | std::ofstream::app);
       gnc_log << gnc_weights_.size() << "," << gnc_weights_.sum() << std::endl;
       gnc_log.close();
     }
