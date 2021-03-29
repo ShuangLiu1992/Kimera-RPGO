@@ -94,6 +94,13 @@ RobustSolver::RobustSolver(const RobustSolverParams& params)
     outfile.open(filename);
     outfile << "graph-size,spin-time(mu-s)\n";
     outfile.close();
+    if (params_.use_gnc_) {
+      std::string gnc_log_file = log_folder_ + "/gnc_log.csv";
+      std::ofstream gnc_log;
+      gnc_log.open(gnc_log_file);
+      gnc_log << "total-lc-opt (post-pcm), gnc-inliers\n";
+      gnc_log.close();
+    }
   }
 }
 
@@ -212,6 +219,13 @@ void RobustSolver::update(const gtsam::NonlinearFactorGraph& factors,
     outfile.open(filename, std::ofstream::out | std::ofstream::app);
     outfile << nfg_.size() << "," << spin_time.count() << std::endl;
     outfile.close();
+    if (params_.use_gnc_) {
+      std::string gnc_log_file = log_folder_ + "/gnc_log.csv";
+      std::ofstream gnc_log;
+      gnc_log.open(gnc_log_file);
+      gnc_log << gnc_weights_.size() << "," << gnc_weights_.sum() << std::endl;
+      gnc_log.close();
+    }
   }
   return;
 }
