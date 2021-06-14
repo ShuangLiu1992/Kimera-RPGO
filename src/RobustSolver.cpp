@@ -134,7 +134,11 @@ void RobustSolver::optimize() {
       }
       // Optimize and get weights
       auto opt_start_t = std::chrono::high_resolution_clock::now();
-      values_ = gnc_optimizer.optimize();
+      try {
+        values_ = gnc_optimizer.optimize();
+      } catch (gtsam::IndeterminantLinearSystemException e) {
+        log<WARNING>("Optimize: Indeterminant Linear System. ");
+      }
       gnc_weights_ = gnc_optimizer.getWeights();
       gnc_num_inliers_ = static_cast<size_t>(gnc_weights_.sum()) -
                          known_inlier_factor_indices.size();
@@ -149,8 +153,12 @@ void RobustSolver::optimize() {
             gnc_num_inliers_;
       }
     } else {
-      values_ = gtsam::LevenbergMarquardtOptimizer(nfg_, values_, lmParams)
-                    .optimize();
+      try {
+        values_ = gtsam::LevenbergMarquardtOptimizer(nfg_, values_, lmParams)
+                      .optimize();
+      } catch (gtsam::IndeterminantLinearSystemException e) {
+        log<WARNING>("Optimize: Indeterminant Linear System. ");
+      }
     }
   } else if (solver_type_ == Solver::GN) {
     gtsam::GaussNewtonParams gnParams;
@@ -185,7 +193,11 @@ void RobustSolver::optimize() {
       }
       // Optimize and get weights
       auto opt_start_t = std::chrono::high_resolution_clock::now();
-      values_ = gnc_optimizer.optimize();
+      try {
+        values_ = gnc_optimizer.optimize();
+      } catch (gtsam::IndeterminantLinearSystemException e) {
+        log<WARNING>("Optimize: Indeterminant Linear System. ");
+      }
       gnc_weights_ = gnc_optimizer.getWeights();
       gnc_num_inliers_ = static_cast<size_t>(gnc_weights_.sum()) -
                          known_inlier_factor_indices.size();
@@ -199,8 +211,14 @@ void RobustSolver::optimize() {
             opt_duration.count() % outlier_removal_->getNumLCInliers() %
             gnc_num_inliers_;
       }
+    } else {
+      try {
+        values_ =
+            gtsam::GaussNewtonOptimizer(nfg_, values_, gnParams).optimize();
+      } catch (gtsam::IndeterminantLinearSystemException e) {
+        log<WARNING>("Optimize: Indeterminant Linear System. ");
+      }
     }
-    values_ = gtsam::GaussNewtonOptimizer(nfg_, values_, gnParams).optimize();
   } else {
     log<WARNING>("Unsupported Solver");
     exit(EXIT_FAILURE);
