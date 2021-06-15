@@ -136,8 +136,10 @@ void RobustSolver::optimize() {
       auto opt_start_t = std::chrono::high_resolution_clock::now();
       try {
         values_ = gnc_optimizer.optimize();
-      } catch (gtsam::IndeterminantLinearSystemException e) {
+      } catch (const gtsam::IndeterminantLinearSystemException& e) {
         log<WARNING>("Optimize: Indeterminant Linear System. ");
+      } catch (const gtsam::InvalidDenseElimination& e) {
+        log<WARNING>("Optimize: Invalid Dense Elimination. ");
       }
       gnc_weights_ = gnc_optimizer.getWeights();
       gnc_num_inliers_ = static_cast<size_t>(gnc_weights_.sum()) -
@@ -156,8 +158,10 @@ void RobustSolver::optimize() {
       try {
         values_ = gtsam::LevenbergMarquardtOptimizer(nfg_, values_, lmParams)
                       .optimize();
-      } catch (gtsam::IndeterminantLinearSystemException e) {
+      } catch (const gtsam::IndeterminantLinearSystemException& e) {
         log<WARNING>("Optimize: Indeterminant Linear System. ");
+      } catch (const gtsam::InvalidDenseElimination& e) {
+        log<WARNING>("Optimize: Invalid Dense Elimination. ");
       }
     }
   } else if (solver_type_ == Solver::GN) {
@@ -195,8 +199,10 @@ void RobustSolver::optimize() {
       auto opt_start_t = std::chrono::high_resolution_clock::now();
       try {
         values_ = gnc_optimizer.optimize();
-      } catch (gtsam::IndeterminantLinearSystemException e) {
+      } catch (const gtsam::IndeterminantLinearSystemException& e) {
         log<WARNING>("Optimize: Indeterminant Linear System. ");
+      } catch (const gtsam::InvalidDenseElimination& e) {
+        log<WARNING>("Optimize: Invalid Dense Elimination. ");
       }
       gnc_weights_ = gnc_optimizer.getWeights();
       gnc_num_inliers_ = static_cast<size_t>(gnc_weights_.sum()) -
@@ -215,8 +221,10 @@ void RobustSolver::optimize() {
       try {
         values_ =
             gtsam::GaussNewtonOptimizer(nfg_, values_, gnParams).optimize();
-      } catch (gtsam::IndeterminantLinearSystemException e) {
+      } catch (const gtsam::IndeterminantLinearSystemException& e) {
         log<WARNING>("Optimize: Indeterminant Linear System. ");
+      } catch (const gtsam::InvalidDenseElimination& e) {
+        log<WARNING>("Optimize: Invalid Dense Elimination. ");
       }
     }
   } else {
