@@ -20,6 +20,8 @@
 
 #include "findClique.h"
 
+#include <chrono>
+
 namespace FMC {
 bool fexists(const char* filename) {
   ifstream ifile(filename);
@@ -28,9 +30,7 @@ bool fexists(const char* filename) {
 
 double wtime()  // returns wall time in seconds
 {
-  timeval tv;
-  gettimeofday(&tv, NULL);
-  return (double)tv.tv_sec + (double)tv.tv_usec / 1000000;
+  return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
 void usage(char* argv0) {

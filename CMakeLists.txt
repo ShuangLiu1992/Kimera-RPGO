@@ -1,15 +1,6 @@
 cmake_minimum_required (VERSION 3.5)
 project(kimera_rpgo VERSION 1.0 LANGUAGES CXX)
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release)
-endif()
-
-IF(APPLE)
-    # Fix linking on 10.14+. See https://stackoverflow.com/questions/54068035
-    LINK_DIRECTORIES(/usr/local/lib)
-ENDIF()
-
 ###########################################################################
 # Find GTSAM
 find_package(GTSAM REQUIRED)
@@ -30,7 +21,7 @@ endif()
 
 ###########################################################################
 # Compile
-add_library(KimeraRPGO SHARED
+add_library(KimeraRPGO 
   src/GenericSolver.cpp
   src/RobustSolver.cpp
   src/Logger.cpp
@@ -56,10 +47,6 @@ target_link_libraries(KimeraRPGO
     Boost::boost
     gtsam
     gtsam_unstable
-)
-
-target_compile_options(KimeraRPGO
-  PRIVATE -Wall -pipe
 )
 
 ###########################################################################

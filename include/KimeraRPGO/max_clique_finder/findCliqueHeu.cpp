@@ -19,8 +19,6 @@
    http://arxiv.org/abs/1411.7460 */
 
 #include <stdlib.h>
-#include <sys/time.h>
-#include <unistd.h>
 #include <cstddef>
 #include <vector>
 #include "findClique.h"
