@@ -29,10 +29,6 @@
 
 using namespace std;
 
-#ifdef _DEBUG
-int DEBUG = 1;
-#endif
-
 namespace FMC {
 
 // Function Definitions
